@@ -910,6 +910,10 @@ fn link_args(cmd: &mut dyn Linker,
         cmd.gc_sections(keep_metadata);
     }
 
+    if sess.opts.debugging_opts.export_dynamic {
+        cmd.export_dynamic();
+    }
+
     let used_link_args = &codegen_results.crate_info.link_args;
 
     if crate_type == config::CrateType::Executable {

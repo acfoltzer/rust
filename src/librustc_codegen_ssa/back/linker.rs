@@ -120,6 +120,7 @@ pub trait Linker {
     fn build_static_executable(&mut self);
     fn args(&mut self, args: &[String]);
     fn export_symbols(&mut self, tmpdir: &Path, crate_type: CrateType);
+    fn export_dynamic(&mut self);
     fn subsystem(&mut self, subsystem: &str);
     fn group_start(&mut self);
     fn group_end(&mut self);
@@ -427,6 +428,10 @@ impl<'a> Linker for GccLinker<'a> {
         self.cmd.arg(arg);
     }
 
+    fn export_dynamic(&mut self) {
+        self.linker_arg("--export-dynamic");
+    }
+
     fn subsystem(&mut self, subsystem: &str) {
         self.linker_arg("--subsystem");
         self.linker_arg(&subsystem);
@@ -661,6 +666,10 @@ impl<'a> Linker for MsvcLinker<'a> {
         self.cmd.arg(&arg);
     }
 
+    fn export_dynamic(&mut self) {
+        unimplemented!()
+    }
+
     fn subsystem(&mut self, subsystem: &str) {
         // Note that previous passes of the compiler validated this subsystem,
         // so we just blindly pass it to the linker.
@@ -849,6 +858,10 @@ impl<'a> Linker for EmLinker<'a> {
         self.cmd.arg(arg);
     }
 
+    fn export_dynamic(&mut self) {
+        unimplemented!()
+    }
+
     fn subsystem(&mut self, _subsystem: &str) {
         // noop
     }
@@ -1030,6 +1043,10 @@ impl<'a> Linker for WasmLd<'a> {
         for sym in self.info.exports[&crate_type].iter() {
             self.cmd.arg("--export").arg(&sym);
         }
+    }
+
+    fn export_dynamic(&mut self) {
+        unimplemented!()
     }
 
     fn subsystem(&mut self, _subsystem: &str) {

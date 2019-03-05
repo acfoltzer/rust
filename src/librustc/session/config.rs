@@ -1376,6 +1376,8 @@ options! {DebuggingOptions, DebuggingSetter, basic_debugging_options,
           "whether to use the PLT when calling into shared libraries;
           only has effect for PIC code on systems with ELF binaries
           (default: PLT is disabled if full relro is enabled)"),
+    export_dynamic: bool = (false, parse_bool, [UNTRACKED],
+        "whether to export all dynamic symbols from a binary or dynamic library target"),
 }
 
 pub fn default_lib_output() -> CrateType {
